@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAOSKU — Simulasi Jualan Baju</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--y:#fdc70f;--b:#4a1c24;--teal:#12a99a;--or:#f08a1c;--red:#e8472b;--mar:#8b1e2e;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{font-family:'Poppins',system-ui,sans-serif;font-weight:600;color:var(--b);background:#fff;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--b);outline-offset:3px}
+.hd,h1,h2,h3{font-family:'Anton','Poppins',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.01em}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(40px) scale(.98);transition:opacity .9s var(--ease) var(--d,0s),transform .9s var(--ease) var(--d,0s)}
+.rv.in{opacity:1;transform:none}
+
+/* top bar */
+.topbar{background:var(--y);overflow:hidden;white-space:nowrap;font-size:11px;font-weight:700;padding:8px 0}
+.track{display:inline-flex;animation:mq 28s linear infinite;will-change:transform}
+.track span{padding:0 56px}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:40;background:#fff;transition:box-shadow .3s}
+.nav.sc{box-shadow:0 6px 24px rgba(74,28,36,.12)}
+.nav nav{max-width:1180px;margin:auto;padding:14px 24px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;font-size:11px;font-weight:700}
+.nl{display:flex;gap:36px}.nl a,.nr>a{position:relative}
+.nl a::after,.nr>a::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;background:var(--b);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease)}
+.nl a:hover::after,.nr>a:hover::after{transform:scaleX(1)}
+.logo{font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase;letter-spacing:.02em}
+.nr{display:flex;justify-content:flex-end;align-items:center;gap:28px}
+.cartbtn{position:relative;background:none;border:0;width:36px;height:36px;display:grid;place-items:center;transition:transform .3s var(--ease)}
+.cartbtn:hover{transform:scale(1.12)}
+.cartbtn svg{width:22px;height:22px}
+.cartbtn b{position:absolute;top:-2px;right:-4px;min-width:18px;height:18px;border-radius:99px;background:var(--b);color:#fff;font-size:10px;display:grid;place-items:center;padding:0 5px;transition:transform .3s var(--ease)}
+.cartbtn b.bump{animation:bump .5s var(--ease)}
+@keyframes bump{40%{transform:scale(1.5)}}
+
+.wrap{max-width:1180px;margin:auto;padding:0 24px}
+.notice{margin:6px auto 14px;max-width:1180px;padding:0 24px;font-size:12px;color:var(--mar)}
+.notice span{display:inline-block;background:#fff3c4;border-radius:10px;padding:8px 14px}
+
+/* buttons */
+.btn{display:inline-block;background:var(--b);color:#fff;border:0;border-radius:99px;padding:14px 28px;font-size:12px;font-weight:700;transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(74,28,36,.3)}
+.btn:active{transform:translateY(0) scale(.97)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.full{width:100%}
+
+/* hero */
+.hero{position:relative;background:var(--y);border-radius:28px;min-height:340px;overflow:hidden;display:flex;align-items:center}
+.hero-t{position:relative;z-index:2;padding:48px 56px;max-width:560px}
+.hero h1{font-size:clamp(52px,8vw,92px);line-height:.95;color:var(--b)}
+.hero h1 span{color:#fff}
+.hero p{margin:18px 0 26px;font-size:13px;font-weight:700}
+.hero-art{position:absolute;right:0;top:0;bottom:0;width:58%}
+.tilt{position:absolute;top:-18%;left:4%;width:112%;transform:rotate(-14deg);display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.fs{animation:fl 7s ease-in-out infinite}
+.fs svg{display:block;width:100%;filter:drop-shadow(8px 12px 6px rgba(74,28,36,.25))}
+@keyframes fl{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(-12px) rotate(var(--r))}}
+
+/* badges */
+.badges{display:flex;justify-content:space-between;gap:12px;padding:56px 12px;overflow-x:auto;scrollbar-width:none}
+.bd{flex:1 0 84px;text-align:center;font-size:11px;font-weight:700;line-height:1.2}
+.ring{width:52px;height:52px;margin:0 auto 8px;border:3.5px solid var(--b);border-radius:50%;display:grid;place-items:center;font-size:22px;transition:transform .5s var(--ease),background .3s,color .3s}
+.bd:hover .ring{transform:rotate(360deg) scale(1.08);background:var(--b);color:var(--y)}
+
+/* band + carousel */
+.band{background:var(--y);border-radius:28px;padding:40px 36px 32px}
+.bh{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:26px}
+.bh h2{font-size:clamp(30px,4vw,42px)}
+.va{font-size:11px;font-weight:700;display:flex;align-items:center;gap:8px;background:none;border:0}
+.va i{width:18px;height:18px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-size:10px;transition:transform .3s}
+.va:hover i{transform:translateX(4px)}
+.rail{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:6px 2px 14px;margin:-6px -2px 0}
+.rail::-webkit-scrollbar{display:none}
+.card{flex:0 0 264px;scroll-snap-align:start;background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.card:hover .art svg,.card:hover .art img{transform:scale(1.08) rotate(-3deg)}
+.art{position:relative;aspect-ratio:1/.92;display:grid;place-items:center;overflow:hidden}
+.art svg,.art img{width:64%;height:auto;max-height:84%;object-fit:contain;transition:transform .6s var(--ease);filter:drop-shadow(6px 10px 6px rgba(0,0,0,.25))}
+.pill{position:absolute;top:12px;left:12px;background:var(--b);color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:99px}
+.best{position:absolute;top:10px;right:10px;width:50px;height:50px;border-radius:50%;background:var(--b);color:#fff;font-size:8px;font-weight:700;display:grid;place-items:center;text-align:center;line-height:1.15;transform:rotate(10deg)}
+.info{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;font-size:11px}
+.r1,.r2{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.r1 span{font-size:13px;font-weight:700}.r1 b{font-weight:700;font-size:12px;white-space:nowrap}
+.r2 em{font-style:normal;font-weight:700;color:var(--c)}
+.r2 span{opacity:.7}
+.sizes{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.sz{min-width:34px;height:28px;border-radius:99px;border:1.5px solid var(--b);background:#fff;font-size:11px;font-weight:700;padding:0 10px;transition:background .25s,color .25s,transform .25s var(--ease)}
+.sz:hover{transform:translateY(-2px)}
+.sz.on{background:var(--b);color:#fff}
+.add{margin-top:4px;background:var(--b);color:#fff;border:0;border-radius:99px;padding:11px;font-size:11px;font-weight:700;transition:transform .3s var(--ease),background .3s}
+.add:hover:not(:disabled){transform:translateY(-2px);background:var(--mar)}
+.add:disabled{opacity:.45;cursor:not-allowed}
+.sk{flex:0 0 264px;height:380px;border-radius:18px;background:linear-gradient(100deg,#fff4 30%,#fff9 50%,#fff4 70%) #ffffff55;background-size:200% 100%;animation:sh 1.3s linear infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.msg{padding:36px 8px;font-size:13px;flex:1}.msg .btn{margin-top:14px}
+.ctrl{display:flex;align-items:center;gap:24px;margin-top:20px}
+.prog{flex:1;height:2px;background:rgba(74,28,36,.25);position:relative;border-radius:2px}
+.prog i{position:absolute;top:-0.5px;height:3px;background:var(--b);border-radius:3px;transition:left .15s,width .15s}
+.arr{display:flex;gap:10px}
+.arr button{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--b);background:transparent;font-size:12px;transition:background .25s,color .25s,transform .25s var(--ease)}
+.arr button:hover{background:var(--b);color:var(--y);transform:scale(1.1)}
+
+/* big text */
+.big{overflow:hidden;margin:72px 0 56px;white-space:nowrap}
+.big div{display:inline-block;font-family:'Anton',sans-serif;font-size:clamp(54px,10vw,128px);line-height:1.05;color:var(--y);text-transform:uppercase;will-change:transform}
+
+/* features */
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;text-align:center;padding:0 12px}
+.ic{width:72px;height:72px;margin:0 auto 14px;display:grid;place-items:center}
+.ic svg{width:100%;height:100%}
+.feat h3{font-size:22px;margin-bottom:10px}
+.feat p{font-size:12px;line-height:1.55;max-width:300px;margin:auto}
+.more{text-align:center;margin:44px 0 72px}
+
+/* feature 2 */
+.f2{display:grid;grid-template-columns:1.05fr 1fr;gap:36px;align-items:center;margin-bottom:80px}
+.collage{position:relative;border-radius:24px;background:var(--or);aspect-ratio:1/1.05;overflow:hidden}
+.collage .cg{position:absolute;width:44%;filter:drop-shadow(8px 12px 8px rgba(0,0,0,.25));animation:fl 8s ease-in-out infinite}
+.blob{position:absolute;top:14px;right:14px;z-index:2;width:104px;height:92px;background:var(--b);color:var(--y);border-radius:50% 46% 54% 48%;display:grid;place-items:center;font-family:'Anton';font-size:34px;transform:rotate(-8deg);animation:pop 3s ease-in-out infinite}
+@keyframes pop{50%{transform:rotate(-2deg) scale(1.06)}}
+.f2 h2{font-size:clamp(34px,4.4vw,52px);line-height:1.05;margin-bottom:14px}
+.f2 p{font-size:12px;line-height:1.6;max-width:380px;margin-bottom:22px}
+#featured{width:264px;transition:opacity .35s,transform .35s var(--ease)}
+#featured.out{opacity:0;transform:translateX(16px)}
+#featured .card{width:264px}
+.f2 .arr{margin:18px 0 0 100px}
+
+/* footer */
+footer{background:var(--b);color:#fff;border-radius:28px 28px 0 0;padding:44px 24px;text-align:center;font-size:12px;line-height:1.7}
+footer .logo{display:block;font-size:34px;margin-bottom:8px;color:var(--y)}
+
+/* drawer */
+.ov{position:fixed;inset:0;background:rgba(74,28,36,.5);opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;z-index:60}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:#fff;z-index:70;transform:translateX(105%);transition:transform .55s var(--ease);display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(0,0,0,.2)}
+body.open .ov{opacity:1;visibility:visible}
+body.open .drawer{transform:none}
+.dh{background:var(--y);padding:20px 24px;display:flex;justify-content:space-between;align-items:center}
+.dh h2{font-size:26px}
+.x{width:34px;height:34px;border-radius:50%;border:0;background:var(--b);color:#fff;font-size:14px;transition:transform .3s var(--ease)}
+.x:hover{transform:rotate(90deg)}
+.db{flex:1;overflow-y:auto;padding:20px 24px 28px}
+.empty{text-align:center;padding:30px 0;font-size:13px}
+.it{display:grid;grid-template-columns:62px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1.5px solid #f1e6c6;animation:in .4s var(--ease)}
+@keyframes in{from{opacity:0;transform:translateX(18px)}}
+.th{width:62px;height:62px;border-radius:12px;display:grid;place-items:center}.th svg,.th img{width:70%;height:70%;object-fit:contain}
+.it .n{font-size:12px;font-weight:700}.it .s{font-size:11px;opacity:.7;margin:2px 0 6px}
+.qt{display:inline-flex;align-items:center;border:1.5px solid var(--b);border-radius:99px;overflow:hidden}
+.qt button{width:26px;height:24px;border:0;background:none;font-weight:700;font-size:14px}.qt button:hover{background:var(--y)}
+.qt span{min-width:24px;text-align:center;font-size:11px}
+.it .pr{text-align:right;font-size:12px;font-weight:700}
+.it .del{display:block;margin:6px 0 0 auto;background:none;border:0;font-size:10px;text-decoration:underline;opacity:.7}
+.tot{display:flex;justify-content:space-between;font-size:15px;font-weight:700;padding:18px 0 6px}
+form{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+label{font-size:11px;font-weight:700;display:flex;flex-direction:column;gap:5px}
+input,textarea{font:inherit;font-weight:500;font-size:13px;border:1.5px solid var(--b);border-radius:12px;padding:10px 12px;color:var(--b);resize:none;background:#fffdf5;transition:box-shadow .25s,border-color .25s}
+input:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px var(--y)}
+.err{color:#c21f1f;font-size:11px;min-height:14px}
+.done{text-align:center;padding:36px 0}
+.done .hd{font-size:34px;margin:12px 0}
+.done p{font-size:12px;line-height:1.6;margin-bottom:6px}
+.done .oid{display:inline-block;background:var(--y);border-radius:12px;padding:10px 18px;font-size:16px;margin:10px 0 20px}
+.tick{width:84px;height:84px;margin:auto;border-radius:50%;background:var(--y);display:grid;place-items:center}
+.tick svg{width:44px;stroke:var(--b);stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:dr .7s .2s var(--ease) forwards}
+@keyframes dr{to{stroke-dashoffset:0}}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,30px);background:var(--b);color:#fff;font-size:12px;font-weight:700;padding:12px 22px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .35s,transform .45s var(--ease);z-index:90;max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:860px){
+ .nl{gap:18px}.hero-t{padding:36px 28px}
+ .hero-art{width:100%;opacity:.4}
+ .feat{grid-template-columns:1fr;gap:44px}
+ .f2{grid-template-columns:1fr}.f2 .arr{margin-left:100px}
+ .band{padding:30px 20px 26px}
+}
+@media(max-width:560px){
+ .nl a:nth-child(n+2){display:none}.nav nav{padding:12px 16px}.nr>a{display:none}
+ .wrap{padding:0 14px}.logo{font-size:26px}
+ .card,.sk{flex-basis:78%}#featured,#featured .card{width:100%;max-width:300px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+ .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar" aria-hidden="true"><div class="track">
+ <div><span>Koleksi kaos terbaru sudah datang</span><span>•</span><span>Koleksi kaos terbaru sudah datang</span><span>•</span><span>Koleksi kaos terbaru sudah datang</span><span>•</span><span>Koleksi kaos terbaru sudah datang</span><span>•</span></div>
+ <div><span>Koleksi kaos terbaru sudah datang</span><span>•</span><span>Koleksi kaos terbaru sudah datang</span><span>•</span><span>Koleksi kaos terbaru sudah datang</span><span>•</span><span>Koleksi kaos terbaru sudah datang</span><span>•</span></div>
+</div></div>
+
+<header class="nav" id="nav"><nav>
+ <div class="nl"><a href="#koleksi">koleksi</a><a href="#keunggulan">keunggulan</a><a href="#paket">pilihan</a></div>
+ <a class="logo" href="#top">kaosku</a>
+ <div class="nr"><a href="#kontak">bantuan</a>
+  <button class="cartbtn" id="openCart" aria-label="Buka keranjang">
+   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg>
+   <b id="cartCount">0</b>
+  </button>
+ </div>
+</nav></header>
+
+<div class="notice" id="notice" hidden><span>Mode demo: isi WEB_APP_URL di app.js agar pesanan masuk ke spreadsheet.</span></div>
+
+<main class="wrap" id="top">
+ <section class="hero rv">
+  <div class="hero-t">
+   <h1><span>Gaya</span><br>kamu sendiri</h1>
+   <p>Simulasi jualan baju: pilih kaos, pilih ukuran, pesanan langsung tercatat.</p>
+   <a class="btn" href="#koleksi">belanja kaos</a>
+  </div>
+  <div class="hero-art" id="heroArt" aria-hidden="true"></div>
+ </section>
+
+ <section class="badges" aria-label="Keunggulan bahan">
+  <div class="bd rv" style="--d:.0s"><div class="ring">✓</div>100% katun</div>
+  <div class="bd rv" style="--d:.08s"><div class="ring">✂</div>Jahitan rapi</div>
+  <div class="bd rv" style="--d:.16s"><div class="ring">❖</div>Combed 30s</div>
+  <div class="bd rv" style="--d:.24s"><div class="ring">★</div>Anti luntur</div>
+  <div class="bd rv" style="--d:.32s"><div class="ring">✿</div>Ramah bumi</div>
+  <div class="bd rv" style="--d:.4s"><div class="ring">✦</div>Unisex</div>
+  <div class="bd rv" style="--d:.48s"><div class="ring">♦</div>Adem dipakai</div>
+ </section>
+
+ <section class="band rv" id="koleksi">
+  <div class="bh"><h2>Kaos lagi hits</h2><button class="va" id="viewAll">lihat semua <i>›</i></button></div>
+  <div class="rail" id="rail" aria-live="polite"></div>
+  <div class="ctrl">
+   <div class="prog"><i id="thumb"></i></div>
+   <div class="arr"><button id="prev" aria-label="Geser ke kiri">‹</button><button id="next" aria-label="Geser ke kanan">›</button></div>
+  </div>
+ </section>
+
+ <div class="big" id="big" aria-hidden="true"><div>Lebih nyaman untukmu, lebih baik untuk bumi</div></div>
+
+ <section class="feat" id="keunggulan">
+  <div class="rv" style="--d:0s">
+   <div class="ic"><svg viewBox="0 0 64 64" fill="#4a1c24"><path d="M30 58h4V32h-4z"/><path d="M32 38C20 38 12 30 12 18c12 0 20 8 20 20z"/><path d="M32 32C32 20 40 12 52 12c0 12-8 20-20 20z"/></svg></div>
+   <h3>Dibuat dari katun</h3>
+   <p>Serat katun pilihan yang lembut di kulit, tetap adem dipakai seharian dan awet setelah berkali-kali dicuci.</p>
+  </div>
+  <div class="rv" style="--d:.12s">
+   <div class="ic" data-shirt="#4a1c24"></div>
+   <h3>Potongan pas</h3>
+   <p>Ukuran S sampai XXL dengan potongan yang rapi. Pilih ukuranmu langsung di kartu produk.</p>
+  </div>
+  <div class="rv" style="--d:.24s">
+   <div class="ic"><svg viewBox="0 0 64 64" fill="#4a1c24"><path d="M32 56C8 40 6 22 17 15c6-3 12 0 15 6 3-6 9-9 15-6 11 7 9 25-15 41z"/></svg></div>
+   <h3>Pesan tanpa ribet</h3>
+   <p>Isi nama, nomor WhatsApp, dan alamat. Pesananmu langsung tercatat rapi di spreadsheet toko.</p>
+  </div>
+ </section>
+ <div class="more rv"><a class="btn" href="#koleksi">lihat koleksi</a></div>
+
+ <section class="f2" id="paket">
+  <div class="collage rv" id="collage"><div class="blob">BARU</div></div>
+  <div class="rv" style="--d:.12s">
+   <h2>Kaos pilihan minggu ini</h2>
+   <p>Geser untuk melihat kaos lain, lalu pilih ukuran dan masukkan ke keranjang.</p>
+   <div id="featured"></div>
+   <div class="arr"><button id="fprev" aria-label="Produk sebelumnya">‹</button><button id="fnext" aria-label="Produk berikutnya">›</button></div>
+  </div>
+ </section>
+</main>
+
+<footer id="kontak">
+ <span class="logo">kaosku</span>
+ Website simulasi jualan baju. Pesanan dikirim ke Google Spreadsheet.<br>
+ Butuh bantuan? Hubungi admin toko lewat WhatsApp.
+</footer>
+
+<div class="ov" id="ov"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Keranjang belanja" aria-hidden="true">
+ <div class="dh"><h2>Keranjang</h2><button class="x" id="closeCart" aria-label="Tutup keranjang">✕</button></div>
+ <div class="db" id="db"></div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
